@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+</head>
+<body>
+  <nav style="margin-bottom:20px;">
+    <a href="/">Home</a> |
+    <a href="/user">Profile</a> |
+    <a href="/affirmations">Affirmations</a> |
+    <a href="/notifications/view">Notifications</a> |
+  <!-- Login button removed from user page nav -->
+    <% if (user) { %>|
+      <a href="/logout">Logout</a>
+    <% } %>
+  </nav>
+  <h1>Welcome, <%= user.name %>!</h1>
+  <p>Email: <%= user.email %></p>
+  <% if (user) { %>
+    <a href="/logout">Logout</a>
+  <% } %>
+
+
+  <h2>Your Affirmations</h2>
+  <% if (affirmations && affirmations.length > 0) { %>
+    <ul>
+      <% affirmations.forEach(function(affirmation) { %>
+        <li>
+          <form action="/user/affirmations/edit/<%= affirmation._id %>" method="POST" style="display:inline; margin-right:10px;">
+            <input type="text" name="message" value="<%= affirmation.message %>" required>
+            <button type="submit">Edit</button>
+          </form>
+          <small>(<%= affirmation.time ? affirmation.time.toLocaleString() : '' %>)</small>
+          <form action="/user/affirmations/delete/<%= affirmation._id %>" method="POST" style="display:inline; margin-left:10px;">
+            <button type="submit" onclick="return confirm('Delete this affirmation?')">Delete</button>
+          </form>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>No affirmations found.</p>
+  <% } %>
+
+
+  <form action="/user/affirmations" method="POST" style="margin-top:20px;">
+    <label for="affirmation">Add Affirmation:</label>
+    <input type="text" id="affirmation" name="message" required>
+    <button type="submit">Save Affirmation</button>
+  </form>
+
+  <form action="/user/affirmations/add-many" method="POST" style="margin-top:10px;">
+    <button type="submit">Add More Affirmations</button>
+  </form>
+
+  <h2>Your Notification Times</h2>
+  <form action="/user/notification-times" method="POST" style="margin-bottom:20px;">
+    <label>Edit notification times (HH:MM, 24hr, comma separated):</label><br>
+    <input type="text" name="notificationTimes" value="<%= user.notificationTimes ? user.notificationTimes.join(',') : '' %>" style="width:300px;">
+    <button type="submit">Save Times</button>
+    <small>Example: 09:00,13:00,17:00,21:00</small>
+  </form>
+  <% if (notifications && notifications.length > 0) { %>
+    <ul>
+      <% notifications.forEach(function(notification) { %>
+        <li>
+          <form action="/user/notifications/edit/<%= notification._id %>" method="POST" style="display:inline; margin-right:10px;">
+            <input type="text" name="message" value="<%= notification.message %>" required>
+            <button type="submit">Edit</button>
+          </form>
+          <small>(<%= notification.time ? notification.time.toLocaleString() : '' %>)</small>
+          <form action="/user/notifications/delete/<%= notification._id %>" method="POST" style="display:inline; margin-left:10px;">
+            <button type="submit" onclick="return confirm('Delete this notification?')">Delete</button>
+          </form>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>No notifications found.</p>
+  <% } %>
+
+
+  <h2>Your Random Affirmation</h2>
+  <% if (randomAffirmation) { %>
+    <blockquote><%= randomAffirmation.message %> <small>(<%= randomAffirmation.time ? randomAffirmation.time.toLocaleString() : '' %>)</small></blockquote>
+  <% } else { %>
+    <p>No affirmations available for random selection.</p>
+  <% } %>
+
+</body>
+</html>

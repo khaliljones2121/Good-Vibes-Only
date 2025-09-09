@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+</head>
+<body>
+  <nav style="margin-bottom:20px;">
+    <a href="/">Home</a> |
+    <a href="/user">Profile</a> |
+    <a href="/affirmations">Affirmations</a> |
+    <a href="/notifications/view">Notifications</a> |
+    <a href="/login">Login</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+  <h1>Register</h1>
+  <form action="/register" method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" required><br>
+    <label>Email:</label>
+    <input type="email" name="email" required><br>
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>

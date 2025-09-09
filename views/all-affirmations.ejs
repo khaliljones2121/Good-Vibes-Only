@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Affirmations</title>
+</head>
+<body>
+  <nav style="margin-bottom:20px;">
+    <a href="/">Home</a> |
+    <a href="/user">Profile</a> |
+    <a href="/affirmations">Affirmations</a> |
+    <a href="/notifications/view">Notifications</a> |
+    <a href="/login">Login</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+  <h1>All Affirmations</h1>
+  <ul>
+    <% affirmations.forEach(function(affirmation) { %>
+      <li>
+        <strong><%= affirmation.message %></strong><br>
+        Time: <%= affirmation.time %><br>
+        User: <%= affirmation.user ? affirmation.user.name : 'Unknown' %>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>

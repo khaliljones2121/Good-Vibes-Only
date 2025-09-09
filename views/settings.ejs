@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Settings</title>
+</head>
+<body>
+  <nav style="margin-bottom:20px;">
+    <a href="/">Home</a> |
+    <a href="/user">Profile</a> |
+    <a href="/settings">Settings</a> |
+    <% if (user) { %><a href="/logout">Logout</a><% } %>
+  </nav>
+  <h1>User Settings</h1>
+  <form action="/settings" method="POST">
+    <label>Notification Times (HH:MM, comma separated):</label><br>
+    <input type="text" name="notificationTimes" value="<%= user.notificationTimes ? user.notificationTimes.join(',') : '' %>" style="width:300px;">
+    <small>Example: 09:00,13:00,17:00,21:00</small><br><br>
+    <label>Affirmation Frequency (per day):</label><br>
+    <input type="number" name="affirmationFrequency" min="1" max="10" value="<%= user.affirmationFrequency || 4 %>"><br><br>
+    <button type="submit">Save Settings</button>
+  </form>
+</body>
+</html>
