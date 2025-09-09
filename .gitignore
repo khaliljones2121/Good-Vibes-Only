@@ -1,0 +1,2 @@
+.env
+const mongoURI = 'mongodb+srv://tsuworld:Mustapha0711..a@goodvibes.xapojqy.mongodb.net/?retryWrites=true&w=majority&appName=GoodVibes';
