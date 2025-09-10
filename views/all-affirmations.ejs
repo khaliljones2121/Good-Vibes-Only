@@ -16,11 +16,11 @@
     <% } %>
     <a href="/logout">Logout</a>
   </nav>
-  <div class="center-affirmations">
-    <h1>All Affirmations</h1>
-    <ul>
+  <div class="center-affirmations" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; width: 100vw;">
+    <h1 style="text-align:center;">All Affirmations</h1>
+    <ul style="width:100%; max-width:600px; margin:0 auto;">
       <% affirmations.forEach(function(affirmation) { %>
-        <li>
+        <li style="text-align:center;">
           <form action="/user/affirmations/save" method="POST" style="display:inline; margin-right:10px;">
             <input type="hidden" name="message" value="<%= affirmation.message %>">
             <button type="submit">Save</button>

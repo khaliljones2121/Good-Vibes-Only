@@ -10,7 +10,8 @@
     <nav style="margin-bottom:20px;">
       <a href="/user">Home</a> |
       <a href="/user">Profile</a> |
-      <a href="/affirmations">Starter Affirmations</a> |
+      <a href="/affirmations">All Users' Affirmations</a> |
+      <a href="/starter-affirmations">Starter Affirmations</a> |
       <a href="/notifications/view">Notifications</a> |
       <a href="/settings">Settings</a> |
       <% if (user) { %>
@@ -29,30 +30,17 @@
       <% } %>
     </div>
 
-      <h2>All Users' Affirmations</h2>
-      <% if (allAffirmations && allAffirmations.length > 0) { %>
-        <ul>
-          <% allAffirmations.forEach(function(affirmation) { %>
-            <li>
-              <strong><%= affirmation.userName %>:</strong> <%= affirmation.message %>
-              <small>(<%= affirmation.time ? affirmation.time.toLocaleString() : '' %>)</small>
-            </li>
-          <% }); %>
-        </ul>
-      <% } else { %>
-        <p>No affirmations from other users yet.</p>
-      <% } %>
 
     <h2>Your Affirmations</h2>
     <% if (affirmations && affirmations.length > 0) { %>
       <ul>
         <% affirmations.forEach(function(affirmation) { %>
-          <li>
+          <li style="background: transparent; box-shadow: none;">
             <form action="/user/affirmations/edit/<%= affirmation._id %>" method="POST" style="display:inline; margin-right:10px;">
               <input type="text" name="message" value="<%= affirmation.message %>" required>
               <button type="submit">Edit</button>
             </form>
-            <small>(<%= affirmation.time ? affirmation.time.toLocaleString() : '' %>)</small>
+            <small style="color: #ffd700; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;">(<%= affirmation.time ? affirmation.time.toLocaleString() : '' %>)</small>
             <form action="/user/affirmations/delete/<%= affirmation._id %>" method="POST" style="display:inline; margin-left:10px;">
               <button type="submit" onclick="return confirm('Delete this affirmation?')">Delete</button>
             </form>

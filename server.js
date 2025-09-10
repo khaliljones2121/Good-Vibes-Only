@@ -134,10 +134,15 @@ app.get('/user', async (req, res) => {
 		await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
 	}
 	let randomAffirmation = null;
-	if (affirmations.length > 0 && req.session.randomAffirmationId) {
-		randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
+	if (affirmations.length > 0) {
+		if (req.session.randomAffirmationId) {
+			randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
+		}
+		// Fallback: pick a random one if not found
+		if (!randomAffirmation) {
+			randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+		}
 	}
-
 	// Fetch all affirmations from all users and populate user names
 	const allAffirmationsRaw = await Notification.find({ type: 'affirmation' }).populate('user');
 	const allAffirmations = allAffirmationsRaw.map(a => ({
@@ -145,7 +150,6 @@ app.get('/user', async (req, res) => {
 		message: a.message,
 		time: a.time
 	}));
-
 	res.render('user', { user, affirmations, notifications, randomAffirmation, allAffirmations });
 });
 
