@@ -23,7 +23,9 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false
 }));
+
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 
 app.get('/', (req, res) => {
@@ -54,17 +56,24 @@ app.get('/login', (req, res) => {
 
 // Login user
 app.post('/login', async (req, res) => {
-	try {
-		const { email, password } = req.body;
-		const user = await User.findOne({ email });
-		if (!user) return res.status(400).send('Invalid email or password');
-		const match = await bcrypt.compare(password, user.password);
-		if (!match) return res.status(400).send('Invalid email or password');
-		req.session.userId = user._id;
-		res.redirect('/user');
-	} catch (err) {
-		res.status(400).send('Login failed: ' + err.message);
-	}
+		try {
+				const { email, password } = req.body;
+				const user = await User.findOne({ email });
+				if (!user) return res.status(400).send('Invalid email or password');
+				const match = await bcrypt.compare(password, user.password);
+				if (!match) return res.status(400).send('Invalid email or password');
+				req.session.userId = user._id;
+				// Select a new random affirmation for this login
+				const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
+				if (affirmations.length > 0) {
+					req.session.randomAffirmationId = affirmations[Math.floor(Math.random() * affirmations.length)]._id;
+				} else {
+					req.session.randomAffirmationId = null;
+				}
+				res.redirect('/user');
+		} catch (err) {
+				res.status(400).send('Login failed: ' + err.message);
+		}
 });
 
 // User profile page
@@ -73,13 +82,18 @@ app.get('/user', async (req, res) => {
 	const user = await User.findById(req.session.userId);
 	if (!user) return res.redirect('/login');
 	const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
-	const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
-	// Select one random affirmation
-	let randomAffirmation = null;
-	if (affirmations.length > 0) {
-		randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-	}
-	res.render('user', { user, affirmations, notifications, randomAffirmation });
+		const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
+		// Remove notifications after viewing
+		if (notifications.length > 0) {
+			const idsToRemove = notifications.map(n => n._id);
+			await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
+		}
+		// Show the random affirmation selected at login
+		let randomAffirmation = null;
+		if (affirmations.length > 0 && req.session.randomAffirmationId) {
+			randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
+		}
+		res.render('user', { user, affirmations, notifications, randomAffirmation });
 });
 
 // Route to update notification times for logged-in user
@@ -253,9 +267,9 @@ app.post('/users', async (req, res) => {
 app.get('/users', async (req, res) => {
 	try {
 		const users = await User.find();
-		res.json(users);
+		res.render('users', { users });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).send('Error loading users');
 	}
 });
 

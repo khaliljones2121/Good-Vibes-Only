@@ -2,22 +2,31 @@
 <html>
 <head>
   <title>User Profile</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <nav style="margin-bottom:20px;">
     <a href="/">Home</a> |
     <a href="/user">Profile</a> |
-    <a href="/affirmations">Affirmations</a> |
+  <a href="/affirmations">Starter Affirmations</a> |
     <a href="/notifications/view">Notifications</a> |
   <!-- Login button removed from user page nav -->
     <% if (user) { %>|
       <a href="/logout">Logout</a>
     <% } %>
   </nav>
+
   <h1>Welcome, <%= user.name %>!</h1>
   <p>Email: <%= user.email %></p>
   <% if (user) { %>
     <a href="/logout">Logout</a>
+  <% } %>
+
+  <h2>Your Random Affirmation</h2>
+  <% if (randomAffirmation) { %>
+    <blockquote><%= randomAffirmation.message %> <small>(<%= randomAffirmation.time ? randomAffirmation.time.toLocaleString() : '' %>)</small></blockquote>
+  <% } else { %>
+    <p>No affirmations available for random selection.</p>
   <% } %>
 
 
