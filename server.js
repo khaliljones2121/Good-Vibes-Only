@@ -3,79 +3,43 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const session = require('express-session');
-
-mongoose.connect(process.env.MONGO_URI)
-	.then(() => console.log('Connected to MongoDB'))
-	.catch(err => {
-		console.error('MongoDB connection error:', err.message);
-		process.exit(1);
-	});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(session({
-	secret: 'goodvibesonlysecret',
-	resave: false,
-	saveUninitialized: false
-}));
-
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-
-app.post('/user/affirmations/save', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	const { message } = req.body;
-	if (!message || !message.trim()) {
-		return res.redirect('/all-affirmations');
-	}
-	await Notification.create({
-		type: 'affirmation',
-		message,
-		time: new Date(),
-		user: req.session.userId
-	});
-	res.redirect('/user');
-});
-
-
-app.post('/user/affirmations/save', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	const { message } = req.body;
-	if (!message || !message.trim()) {
-		return res.redirect('/all-affirmations');
-	}
-	await Notification.create({
-		type: 'affirmation',
-		message,
-		time: new Date(),
-		user: req.session.userId
-	});
-	res.redirect('/user');
-});
 const bcrypt = require('bcrypt');
 const cron = require('node-cron');
 const User = require('./models/User');
 const Notification = require('./models/Notification');
 
-
 mongoose.connect(process.env.MONGO_URI)
-	.then(() => console.log('Connected to MongoDB'))
-	.catch(err => {
-		console.error('MongoDB connection error:', err.message);
-		process.exit(1);
-	});
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => {
+        console.error('MongoDB connection error:', err.message);
+        process.exit(1);
+    });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-	secret: 'goodvibesonlysecret',
-	resave: false,
-	saveUninitialized: false
+    secret: 'goodvibesonlysecret',
+    resave: false,
+    saveUninitialized: false
 }));
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+app.post('/user/affirmations', async (req, res) => {
+	if (!req.session.userId) return res.redirect('/login');
+	const { message } = req.body;
+	if (!message || !message.trim()) {
+		return res.redirect('/user');
+	}
+	await Notification.create({
+		type: 'affirmation',
+		message,
+		time: new Date(),
+		user: req.session.userId
+	});
+	res.redirect('/user');
+});
 
 app.get('/', (req, res) => {
 	res.render('index');
@@ -219,14 +183,24 @@ app.post('/user/affirmations/add-many', async (req, res) => {
 	res.redirect('/user');
 });
 
+app.get('/starter-affirmations', async (req, res) => {
+  try {
+    const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('all-affirmations', { affirmations, user, pageType: 'starter' });
+  } catch (err) {
+    res.status(500).send('Error loading starter affirmations');
+  }
+});
+
 app.get('/affirmations', async (req, res) => {
-	try {
-		const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
-		const user = req.session.userId ? await User.findById(req.session.userId) : null;
-		res.render('all-affirmations', { affirmations, user });
-	} catch (err) {
-		res.status(500).send('Error loading affirmations');
-	}
+  try {
+    const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('all-affirmations', { affirmations, user, pageType: 'all' });
+  } catch (err) {
+    res.status(500).send('Error loading affirmations');
+  }
 });
 
 app.get('/my-affirmations', async (req, res) => {
@@ -373,6 +347,6 @@ const scheduleUserNotifications = () => {
 			}
 		});
 	});
-};
+}
 
 scheduleUserNotifications();
