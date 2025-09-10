@@ -1,3 +1,30 @@
+/* Center the starter affirmations page content */
+.center-affirmations {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+}
+/* Center the entire profile page content */
+.center-profile-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+}
+/* Center the sign-in page content */
+.center-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+}
 .landing-logo {
   display: block;
   margin: 0 auto 24px auto;
@@ -62,7 +89,8 @@
 .landing-center h1 {
   text-align: center;
   margin-top: 48px;
-  font-size: 2.8em;
+  font-size: 3.6em;
+  font-weight: 900;
 }
 .center-buttons {
   display: flex;
@@ -89,11 +117,11 @@
 .center-title {
   text-align: center;
   margin-top: 48px;
-  font-size: 2.8em;
+  font-size: 4.2em;
 }
 body {
   font-family: 'Comic Neue', 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #f7fafc 0%, #c2e9fb 100%);
+  background: linear-gradient(135deg, #232526 0%, #414345 40%, #ff512f 100%);
   color: #222;
   margin: 0;
   padding: 0;

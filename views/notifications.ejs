@@ -11,7 +11,9 @@
     <a href="/user">Profile</a> |
   <a href="/affirmations">Starter Affirmations</a> |
     <a href="/notifications/view">Notifications</a> |
-    <a href="/login">Login</a> |
+    <% if (!user) { %>
+      <a href="/login">Login</a> |
+    <% } %>
     <a href="/logout">Logout</a>
   </nav>
   <div class="center-notifications">

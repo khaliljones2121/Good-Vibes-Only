@@ -209,7 +209,8 @@ app.post('/user/affirmations/add-many', async (req, res) => {
 app.get('/affirmations', async (req, res) => {
 	try {
 		const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
-		res.render('all-affirmations', { affirmations });
+		const user = req.session.userId ? await User.findById(req.session.userId) : null;
+		res.render('all-affirmations', { affirmations, user });
 	} catch (err) {
 		res.status(500).send('Error loading affirmations');
 	}
@@ -252,7 +253,8 @@ app.get('/notifications/view', async (req, res) => {
 				notifications = [randomAffirmation, ...notifications];
 			}
 		}
-		res.render('notifications', { notifications });
+		const user = req.session.userId ? await User.findById(req.session.userId) : null;
+		res.render('notifications', { notifications, user });
 	} catch (err) {
 		res.status(500).send('Error loading notifications');
 	}
