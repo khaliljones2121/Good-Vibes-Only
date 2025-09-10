@@ -24,9 +24,9 @@
   <img src="<%= user.avatar %>" alt="Profile Picture" style="width:120px; height:120px; object-fit:cover; border-radius:50%; box-shadow:0 2px 8px rgba(67,206,162,0.18);">
       <% } %>
       <h1>Welcome, <%= user.name %>!</h1>
-      <p>Email: <%= user.email %></p>
+  <p style="color:#fff; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000; font-size: 1.3em;">Email: <%= user.email %></p>
       <% if (user) { %>
-        <a href="/logout">Logout</a>
+  <a href="/logout" style="color:#fff; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;">Logout</a>
       <% } %>
     </div>
 
@@ -52,7 +52,7 @@
     <% } %>
 
 
-    <form action="/user/affirmations" method="POST" style="margin-top:20px;">
+  <form action="/user/affirmations" method="POST" style="margin-top:20px; color:#fff; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;">
       <label for="affirmation">Add Affirmation:</label>
       <input type="text" id="affirmation" name="message" required>
       <button type="submit">Save Affirmation</button>
@@ -60,7 +60,7 @@
 
 
     <h2>Your Notification Times</h2>
-    <form action="/user/notification-times" method="POST" style="margin-bottom:20px;">
+  <form action="/user/notification-times" method="POST" style="margin-bottom:20px; color:#fff; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;">
       <label>Edit notification times (HH:MM, 24hr, comma separated):</label><br>
       <input type="text" name="notificationTimes" value="<%= user.notificationTimes ? user.notificationTimes.join(',') : '' %>" style="width:300px;">
       <button type="submit">Save Times</button>
