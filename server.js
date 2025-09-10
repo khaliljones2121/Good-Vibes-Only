@@ -1,5 +1,3 @@
-
-
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -24,14 +22,12 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-// Route to save a starter affirmation for the logged-in user
 app.post('/user/affirmations/save', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const { message } = req.body;
 	if (!message || !message.trim()) {
 		return res.redirect('/all-affirmations');
 	}
-	// Save the affirmation for the user
 	await Notification.create({
 		type: 'affirmation',
 		message,
@@ -41,18 +37,13 @@ app.post('/user/affirmations/save', async (req, res) => {
 	res.redirect('/user');
 });
 
-// ...existing code...
 
-// ...existing code...
-
-// Route to save a starter affirmation for the logged-in user
 app.post('/user/affirmations/save', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const { message } = req.body;
 	if (!message || !message.trim()) {
 		return res.redirect('/all-affirmations');
 	}
-	// Save the affirmation for the user
 	await Notification.create({
 		type: 'affirmation',
 		message,
@@ -94,7 +85,6 @@ app.get('/register', (req, res) => {
 	res.render('register');
 });
 
-// Register user
 app.post('/register', async (req, res) => {
 	try {
 		const { name, email, password } = req.body;
@@ -112,7 +102,6 @@ app.get('/login', (req, res) => {
 	res.render('login');
 });
 
-// Login user
 app.post('/login', async (req, res) => {
 		try {
 				const { email, password } = req.body;
@@ -134,19 +123,16 @@ app.post('/login', async (req, res) => {
 		}
 });
 
-// User profile page
 app.get('/user', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const user = await User.findById(req.session.userId);
 	if (!user) return res.redirect('/login');
 	const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
 		const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
-		// Remove notifications after viewing
 		if (notifications.length > 0) {
 			const idsToRemove = notifications.map(n => n._id);
 			await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
 		}
-		// Show the random affirmation selected at login
 		let randomAffirmation = null;
 		if (affirmations.length > 0 && req.session.randomAffirmationId) {
 			randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
@@ -154,7 +140,6 @@ app.get('/user', async (req, res) => {
 		res.render('user', { user, affirmations, notifications, randomAffirmation });
 });
 
-// Route to update notification times for logged-in user
 app.post('/user/notification-times', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	let { notificationTimes } = req.body;
@@ -166,7 +151,6 @@ app.post('/user/notification-times', async (req, res) => {
 });
 
 
-// Route to delete an affirmation for the logged-in user
 
 app.post('/user/affirmations/delete/:id', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
@@ -175,7 +159,6 @@ app.post('/user/affirmations/delete/:id', async (req, res) => {
 	res.redirect('/user');
 });
 
-// Route to edit an affirmation for the logged-in user
 app.post('/user/affirmations/edit/:id', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const affirmationId = req.params.id;
@@ -184,7 +167,6 @@ app.post('/user/affirmations/edit/:id', async (req, res) => {
 	res.redirect('/user');
 });
 
-// Route to delete a notification for the logged-in user
 app.post('/user/notifications/delete/:id', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const notificationId = req.params.id;
@@ -192,7 +174,6 @@ app.post('/user/notifications/delete/:id', async (req, res) => {
 	res.redirect('/user');
 });
 
-// Route to edit a notification for the logged-in user
 app.post('/user/notifications/edit/:id', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const notificationId = req.params.id;
@@ -201,7 +182,6 @@ app.post('/user/notifications/edit/:id', async (req, res) => {
 	res.redirect('/user');
 });
 
-// Route to add multiple affirmations for the logged-in user
 app.post('/user/affirmations/add-many', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const defaultAffirmations = [
@@ -226,7 +206,6 @@ app.post('/user/affirmations/add-many', async (req, res) => {
 	res.redirect('/user');
 });
 
-// All affirmations page
 app.get('/affirmations', async (req, res) => {
 	try {
 		const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
@@ -236,7 +215,6 @@ app.get('/affirmations', async (req, res) => {
 	}
 });
 
-// Personalized affirmations for logged-in user
 app.get('/my-affirmations', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	try {
@@ -265,11 +243,9 @@ app.get('/affirmations/today', async (req, res) => {
 
 app.get('/notifications/view', async (req, res) => {
 	try {
-		// Show only new notifications (e.g., those created in the last 24 hours)
 		const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 		let notifications = await Notification.find({ time: { $gte: since }, type: { $ne: 'affirmation' } }).populate('user');
 
-		// Only show one random affirmation for the logged-in user upon login
 		if (req.session.userId && req.session.randomAffirmationId) {
 			const randomAffirmation = await Notification.findById(req.session.randomAffirmationId).populate('user');
 			if (randomAffirmation) {
@@ -282,14 +258,12 @@ app.get('/notifications/view', async (req, res) => {
 	}
 });
 
-// Logout
 app.get('/logout', (req, res) => {
 	req.session.destroy(() => {
 		res.redirect('/');
 	});
 });
 
-// Settings page
 app.get('/settings', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const user = await User.findById(req.session.userId);
@@ -310,7 +284,6 @@ app.post('/settings', async (req, res) => {
 	res.redirect('/settings');
 });
 
-// Create a new user
 app.post('/users', async (req, res) => {
 	try {
 		const user = new User(req.body);
@@ -330,7 +303,6 @@ app.get('/users', async (req, res) => {
 	}
 });
 
-// Create a new notification
 app.post('/notifications', async (req, res) => {
 	try {
 		const notification = new Notification(req.body);
@@ -362,7 +334,6 @@ app.listen(PORT, () => {
 
 
 const scheduleUserNotifications = () => {
-	// Clear previous schedules if needed (not implemented here for simplicity)
 	const defaultTimes = ["09:00", "13:00", "17:00", "21:00"];
 	defaultTimes.forEach(timeStr => {
 		const [hour, minute] = timeStr.split(":");
