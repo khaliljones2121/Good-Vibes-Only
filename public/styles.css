@@ -1,3 +1,13 @@
+/* Make email font white on profile page */
+.center-profile p {
+  color: #fff;
+}
+/* Make welcome message on profile page white and larger */
+.center-profile h1 {
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000;
+  font-size: 6.09em;
+}
 /* Center the starter affirmations page content */
 .center-affirmations {
   display: flex;
@@ -158,10 +168,10 @@ h1, h2 {
 }
 form {
   margin: 20px 0;
-  background: #fff;
+  background: transparent;
   padding: 18px 24px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(67,206,162,0.08);
+  box-shadow: none;
 }
 input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
   padding: 10px;

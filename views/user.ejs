@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body style="background: url('/public/photo-1524475922556-171e86798684.avif') no-repeat center center fixed; background-size: cover;">
   <div class="center-profile-page">
     <nav style="margin-bottom:20px;">
       <a href="/user">Home</a> |
@@ -20,7 +20,7 @@
 
     <div class="center-profile" style="display: flex; align-items: center; gap: 24px;">
       <% if (user.avatar) { %>
-        <img src="<%= user.avatar %>" alt="Profile Picture" style="width:80px; height:80px; object-fit:cover; border-radius:50%; box-shadow:0 2px 8px rgba(67,206,162,0.18);">
+  <img src="<%= user.avatar %>" alt="Profile Picture" style="width:120px; height:120px; object-fit:cover; border-radius:50%; box-shadow:0 2px 8px rgba(67,206,162,0.18);">
       <% } %>
       <h1>Welcome, <%= user.name %>!</h1>
       <p>Email: <%= user.email %></p>
