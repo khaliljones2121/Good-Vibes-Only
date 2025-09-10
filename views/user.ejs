@@ -85,12 +85,14 @@
   <% } %>
 
 
-  <h2>Your Random Affirmation</h2>
-  <% if (randomAffirmation) { %>
-    <blockquote><%= randomAffirmation.message %> <small>(<%= randomAffirmation.time ? randomAffirmation.time.toLocaleString() : '' %>)</small></blockquote>
-  <% } else { %>
-    <p>No affirmations available for random selection.</p>
-  <% } %>
+  <div class="center-random-affirmation">
+    <h2>Your Random Affirmation</h2>
+    <% if (randomAffirmation) { %>
+      <blockquote><%= randomAffirmation.message %> <small>(<%= randomAffirmation.time ? randomAffirmation.time.toLocaleString() : '' %>)</small></blockquote>
+    <% } else { %>
+      <p>No affirmations available for random selection.</p>
+    <% } %>
+  </div>
 
 </body>
 </html>
