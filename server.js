@@ -298,13 +298,14 @@ app.get('/settings', async (req, res) => {
 
 app.post('/settings', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
-	let { notificationTimes, affirmationFrequency } = req.body;
+	let { notificationTimes, affirmationFrequency, avatar } = req.body;
 	if (!notificationTimes) notificationTimes = [];
 	const timesArr = notificationTimes.split(',').map(t => t.trim()).filter(Boolean);
 	affirmationFrequency = parseInt(affirmationFrequency) || 4;
 	await User.findByIdAndUpdate(req.session.userId, {
 		notificationTimes: timesArr,
-		affirmationFrequency
+		affirmationFrequency,
+		avatar: avatar || ''
 	});
 	res.redirect('/settings');
 });

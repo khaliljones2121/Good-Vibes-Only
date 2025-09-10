@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
   affirmationFrequency: {
     type: Number,
     default: 4
-  }
-  // Add more fields as needed
+  },
+  avatar: { type: String },
 });
 
 module.exports = mongoose.model('User', userSchema);

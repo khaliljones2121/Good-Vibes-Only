@@ -17,7 +17,10 @@
     <% } %>
   </nav>
 
-  <div class="center-profile">
+  <div class="center-profile" style="display: flex; align-items: center; gap: 24px;">
+    <% if (user.avatar) { %>
+      <img src="<%= user.avatar %>" alt="Profile Picture" style="width:80px; height:80px; object-fit:cover; border-radius:50%; box-shadow:0 2px 8px rgba(67,206,162,0.18);">
+    <% } %>
     <h1>Welcome, <%= user.name %>!</h1>
     <p>Email: <%= user.email %></p>
     <% if (user) { %>

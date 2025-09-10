@@ -19,6 +19,9 @@
     <small>Example: 09:00,13:00,17:00,21:00</small><br><br>
     <label>Affirmation Frequency (per day):</label><br>
     <input type="number" name="affirmationFrequency" min="1" max="10" value="<%= user.affirmationFrequency || 4 %>"><br><br>
+    <label>Profile Image URL:</label><br>
+    <input type="text" name="avatar" value="<%= user.avatar || '' %>" style="width:300px;">
+    <small>Paste a link to your profile picture (e.g. https://...)</small><br><br>
     <button type="submit">Save Settings</button>
   </form>
 </body>
