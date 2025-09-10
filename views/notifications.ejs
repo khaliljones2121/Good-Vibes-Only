@@ -13,15 +13,17 @@
     <a href="/login">Login</a> |
     <a href="/logout">Logout</a>
   </nav>
-  <h1>All Notifications</h1>
-  <ul>
-    <% notifications.forEach(function(notification) { %>
-      <li>
-        <strong><%= notification.type %></strong>: <%= notification.message %> <br>
-        Time: <%= notification.time %> <br>
-        User: <%= notification.user ? notification.user.name : 'Unknown' %>
-      </li>
-    <% }); %>
-  </ul>
+  <div class="center-notifications">
+    <h1>All Notifications</h1>
+    <ul>
+      <% notifications.forEach(function(notification) { %>
+        <li>
+          <strong><%= notification.type %></strong>: <%= notification.message %> <br>
+          Time: <%= notification.time %> <br>
+          User: <%= notification.user ? notification.user.name : 'Unknown' %>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
 </body>
 </html>

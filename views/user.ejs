@@ -8,19 +8,21 @@
   <nav style="margin-bottom:20px;">
     <a href="/">Home</a> |
     <a href="/user">Profile</a> |
-  <a href="/affirmations">Starter Affirmations</a> |
+    <a href="/affirmations">Starter Affirmations</a> |
     <a href="/notifications/view">Notifications</a> |
-  <!-- Login button removed from user page nav -->
-    <% if (user) { %>|
+    <a href="/settings">Settings</a> |
+    <% if (user) { %>
       <a href="/logout">Logout</a>
     <% } %>
   </nav>
 
-  <h1>Welcome, <%= user.name %>!</h1>
-  <p>Email: <%= user.email %></p>
-  <% if (user) { %>
-    <a href="/logout">Logout</a>
-  <% } %>
+  <div class="center-profile">
+    <h1>Welcome, <%= user.name %>!</h1>
+    <p>Email: <%= user.email %></p>
+    <% if (user) { %>
+      <a href="/logout">Logout</a>
+    <% } %>
+  </div>
 
 
 

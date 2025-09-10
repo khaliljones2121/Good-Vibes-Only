@@ -13,19 +13,21 @@
     <a href="/login">Login</a> |
     <a href="/logout">Logout</a>
   </nav>
-  <h1>All Affirmations</h1>
-  <ul>
-    <% affirmations.forEach(function(affirmation) { %>
-      <li>
-        <form action="/user/affirmations/save" method="POST" style="display:inline; margin-right:10px;">
-          <input type="hidden" name="message" value="<%= affirmation.message %>">
-          <button type="submit">Save</button>
-        </form>
-        <strong><%= affirmation.message %></strong><br>
-        Time: <%= affirmation.time %><br>
-        User: <%= affirmation.user ? affirmation.user.name : 'Unknown' %>
-      </li>
-    <% }); %>
-  </ul>
+  <div class="center-affirmations">
+    <h1>All Affirmations</h1>
+    <ul>
+      <% affirmations.forEach(function(affirmation) { %>
+        <li>
+          <form action="/user/affirmations/save" method="POST" style="display:inline; margin-right:10px;">
+            <input type="hidden" name="message" value="<%= affirmation.message %>">
+            <button type="submit">Save</button>
+          </form>
+          <strong><%= affirmation.message %></strong><br>
+          Time: <%= affirmation.time %><br>
+          User: <%= affirmation.user ? affirmation.user.name : 'Unknown' %>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
 </body>
 </html>
