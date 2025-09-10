@@ -1,14 +1,11 @@
-/* Make email font white on profile page */
 .center-profile p {
   color: #fff;
 }
-/* Make welcome message on profile page white and larger */
 .center-profile h1 {
   color: #ffd700;
   text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000;
   font-size: 6.09em;
 }
-/* Center the starter affirmations page content */
 .center-affirmations {
   display: flex;
   flex-direction: column;
@@ -17,7 +14,6 @@
   min-height: 100vh;
   width: 100vw;
 }
-/* Center the entire profile page content */
 .center-profile-page {
   display: flex;
   flex-direction: column;
@@ -26,7 +22,6 @@
   min-height: 100vh;
   width: 100vw;
 }
-/* Center the sign-in page content */
 .center-login {
   display: flex;
   flex-direction: column;
