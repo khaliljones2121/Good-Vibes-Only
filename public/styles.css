@@ -1,15 +1,15 @@
-.center-profile p {
-  color: #fff;
-}
-.center-profile h1 {
-  color: #ffd700;
-  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000, 0 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000;
-  font-size: 6.09em;
-}
-.center-affirmations {
+.center-profile-page {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #185a9d;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='60,10 100,80 40,80 90,110 30,80 90,80' fill='%23ffd700'/%3E%3Cpolygon points='30,110 50,120 70,110' fill='%2343cea2'/%3E%3Cpolygon points='100,30 110,60 120,30' fill='%23ff512f'/%3E%3Cpolygon points='60,90 80,120 40,120' fill='%2300c3ff'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  box-shadow: 0 4px 32px rgba(67,206,162,0.10);
+}
   justify-content: center;
   min-height: 100vh;
   width: 100vw;
@@ -21,6 +21,10 @@
   justify-content: center;
   min-height: 100vh;
   width: 100vw;
+  background:
+    linear-gradient(135deg, #43cea2 0%, #ffd700 40%, #ff512f 100%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='30,5 40,30 25,30 35,55 20,30 35,30' fill='%23ffd700'/%3E%3Cpolygon points='10,50 15,60 20,50' fill='%2343cea2'/%3E%3Cpolygon points='50,10 55,20 60,10' fill='%23ff512f'/%3E%3Cpolygon points='30,40 35,50 25,50' fill='%2300c3ff'/%3E%3C/svg%3E") repeat;
+  box-shadow: 0 4px 32px rgba(67,206,162,0.10);
 }
 .center-login {
   display: flex;
