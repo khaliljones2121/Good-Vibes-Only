@@ -128,16 +128,25 @@ app.get('/user', async (req, res) => {
 	const user = await User.findById(req.session.userId);
 	if (!user) return res.redirect('/login');
 	const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
-		const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
-		if (notifications.length > 0) {
-			const idsToRemove = notifications.map(n => n._id);
-			await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
-		}
-		let randomAffirmation = null;
-		if (affirmations.length > 0 && req.session.randomAffirmationId) {
-			randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
-		}
-		res.render('user', { user, affirmations, notifications, randomAffirmation });
+	const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
+	if (notifications.length > 0) {
+		const idsToRemove = notifications.map(n => n._id);
+		await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
+	}
+	let randomAffirmation = null;
+	if (affirmations.length > 0 && req.session.randomAffirmationId) {
+		randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
+	}
+
+	// Fetch all affirmations from all users and populate user names
+	const allAffirmationsRaw = await Notification.find({ type: 'affirmation' }).populate('user');
+	const allAffirmations = allAffirmationsRaw.map(a => ({
+		userName: a.user && a.user.name ? a.user.name : 'Unknown',
+		message: a.message,
+		time: a.time
+	}));
+
+	res.render('user', { user, affirmations, notifications, randomAffirmation, allAffirmations });
 });
 
 app.post('/user/notification-times', async (req, res) => {

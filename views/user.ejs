@@ -29,6 +29,20 @@
       <% } %>
     </div>
 
+      <h2>All Users' Affirmations</h2>
+      <% if (allAffirmations && allAffirmations.length > 0) { %>
+        <ul>
+          <% allAffirmations.forEach(function(affirmation) { %>
+            <li>
+              <strong><%= affirmation.userName %>:</strong> <%= affirmation.message %>
+              <small>(<%= affirmation.time ? affirmation.time.toLocaleString() : '' %>)</small>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No affirmations from other users yet.</p>
+      <% } %>
+
     <h2>Your Affirmations</h2>
     <% if (affirmations && affirmations.length > 0) { %>
       <ul>
