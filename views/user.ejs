@@ -22,12 +22,6 @@
     <a href="/logout">Logout</a>
   <% } %>
 
-  <h2>Your Random Affirmation</h2>
-  <% if (randomAffirmation) { %>
-    <blockquote><%= randomAffirmation.message %> <small>(<%= randomAffirmation.time ? randomAffirmation.time.toLocaleString() : '' %>)</small></blockquote>
-  <% } else { %>
-    <p>No affirmations available for random selection.</p>
-  <% } %>
 
 
   <h2>Your Affirmations</h2>

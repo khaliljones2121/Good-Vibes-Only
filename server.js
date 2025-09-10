@@ -1,8 +1,66 @@
+
+
 require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const session = require('express-session');
+
+mongoose.connect(process.env.MONGO_URI)
+	.then(() => console.log('Connected to MongoDB'))
+	.catch(err => {
+		console.error('MongoDB connection error:', err.message);
+		process.exit(1);
+	});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({
+	secret: 'goodvibesonlysecret',
+	resave: false,
+	saveUninitialized: false
+}));
+
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+
+// Route to save a starter affirmation for the logged-in user
+app.post('/user/affirmations/save', async (req, res) => {
+	if (!req.session.userId) return res.redirect('/login');
+	const { message } = req.body;
+	if (!message || !message.trim()) {
+		return res.redirect('/all-affirmations');
+	}
+	// Save the affirmation for the user
+	await Notification.create({
+		type: 'affirmation',
+		message,
+		time: new Date(),
+		user: req.session.userId
+	});
+	res.redirect('/user');
+});
+
+// ...existing code...
+
+// ...existing code...
+
+// Route to save a starter affirmation for the logged-in user
+app.post('/user/affirmations/save', async (req, res) => {
+	if (!req.session.userId) return res.redirect('/login');
+	const { message } = req.body;
+	if (!message || !message.trim()) {
+		return res.redirect('/all-affirmations');
+	}
+	// Save the affirmation for the user
+	await Notification.create({
+		type: 'affirmation',
+		message,
+		time: new Date(),
+		user: req.session.userId
+	});
+	res.redirect('/user');
+});
 const bcrypt = require('bcrypt');
 const cron = require('node-cron');
 const User = require('./models/User');
@@ -107,23 +165,9 @@ app.post('/user/notification-times', async (req, res) => {
 	res.redirect('/user');
 });
 
-// Route to save a new affirmation for the logged-in user
-app.post('/user/affirmations', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	const { message } = req.body;
-	if (!message || !message.trim()) {
-		return res.redirect('/user');
-	}
-	await Notification.create({
-		type: 'affirmation',
-		message,
-		time: new Date(),
-		user: req.session.userId
-	});
-	res.redirect('/user');
-});
 
 // Route to delete an affirmation for the logged-in user
+
 app.post('/user/affirmations/delete/:id', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const affirmationId = req.params.id;
@@ -221,7 +265,17 @@ app.get('/affirmations/today', async (req, res) => {
 
 app.get('/notifications/view', async (req, res) => {
 	try {
-		const notifications = await Notification.find().populate('user');
+		// Show only new notifications (e.g., those created in the last 24 hours)
+		const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+		let notifications = await Notification.find({ time: { $gte: since }, type: { $ne: 'affirmation' } }).populate('user');
+
+		// Only show one random affirmation for the logged-in user upon login
+		if (req.session.userId && req.session.randomAffirmationId) {
+			const randomAffirmation = await Notification.findById(req.session.randomAffirmationId).populate('user');
+			if (randomAffirmation) {
+				notifications = [randomAffirmation, ...notifications];
+			}
+		}
 		res.render('notifications', { notifications });
 	} catch (err) {
 		res.status(500).send('Error loading notifications');
@@ -232,6 +286,10 @@ app.get('/notifications/view', async (req, res) => {
 app.get('/logout', (req, res) => {
 	req.session.destroy(() => {
 		res.redirect('/');
+	});
+});
+
+// Settings page
 app.get('/settings', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	const user = await User.findById(req.session.userId);
@@ -249,8 +307,6 @@ app.post('/settings', async (req, res) => {
 		affirmationFrequency
 	});
 	res.redirect('/settings');
-});
-	});
 });
 
 // Create a new user
@@ -332,5 +388,4 @@ const scheduleUserNotifications = () => {
 	});
 };
 
-// Schedule notifications for default times (will check user preferences)
 scheduleUserNotifications();
