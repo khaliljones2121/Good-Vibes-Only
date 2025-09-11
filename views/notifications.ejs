@@ -1,3 +1,4 @@
+<%- include('partials/header', { user: user }) %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,16 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body style="background: url('/public/photo-1604699229817-27301bdfed68.avif') no-repeat center center fixed; background-size: cover;">
-  <nav style="margin-bottom:20px;">
-  <a href="/user">Home</a> |
-    <a href="/user">Profile</a> |
-  <a href="/affirmations">Starter Affirmations</a> |
-    <a href="/notifications/view">Notifications</a> |
-    <% if (!user) { %>
-      <a href="/login">Login</a> |
-    <% } %>
-    <a href="/logout">Logout</a>
-  </nav>
   <div class="center-notifications">
     <h1>All Notifications</h1>
     <ul>

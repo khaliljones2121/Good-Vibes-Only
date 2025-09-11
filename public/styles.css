@@ -1,3 +1,54 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  width: 100vw;
+  box-sizing: border-box;
+  padding: 32px 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 18px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(67,206,162,0.10);
+}
+
+form label {
+  text-align: right;
+  font-size: 1.15em;
+  color: #185a9d;
+  align-self: center;
+}
+
+form input,
+form textarea,
+form select {
+  font-size: 1.15em;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #43cea2;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body > header, body > footer {
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+body > main {
+  margin-left: auto;
+  margin-right: auto;
+}
 .welcome-user {
   font-size: 2.6em;
   font-weight: 900;
@@ -121,7 +172,7 @@
 }
 body {
   font-family: 'Poppins', 'Montserrat', 'Comic Neue', 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #232526 0%, #414345 40%, #ff512f 100%);
+  background: none !important;
   color: #222;
   margin: 0;
   padding: 0;
@@ -235,6 +286,22 @@ blockquote {
   align-items: center;
   justify-content: center;
   background: url('/logo.png') no-repeat center center;
+  background-size: cover;
+  opacity: 1;
+  pointer-events: none;
+}
+.signin-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/premium_photo-1671599010192-23b6bfd6fb6e.avif') no-repeat center center;
   background-size: cover;
   opacity: 1;
   pointer-events: none;

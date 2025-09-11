@@ -1,0 +1,21 @@
+<header>
+  <nav>
+  <% if (user) { %>
+    <a href="/user">Profile</a>
+  <% } else { %>
+    <a href="/">Home</a>
+  <% } %>
+  <a href="/all-affirmations">Affirmations</a>
+  <% if (typeof pageType === 'undefined' || (pageType !== 'register' && pageType !== 'login')) { %>
+    <a href="/user">Profile</a>
+    <a href="/notifications">Notifications</a>
+    <a href="/settings">Settings</a>
+  <% } %>
+    <% if (user) { %>
+      <a href="/logout">Log Out</a>
+    <% } else { %>
+      <a href="/login">Log In</a>
+      <a href="/register">Sign Up</a>
+    <% } %>
+  </nav>
+</header>

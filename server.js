@@ -9,124 +9,150 @@ const User = require('./models/User');
 const Notification = require('./models/Notification');
 
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => {
-        console.error('MongoDB connection error:', err.message);
-        process.exit(1);
-    });
+	.then(() => console.log('Connected to MongoDB'))
+	.catch(err => {
+		console.error('MongoDB connection error:', err.message);
+		process.exit(1);
+	});
 
+	
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(session({
-    secret: 'goodvibesonlysecret',
-    resave: false,
-    saveUninitialized: false
+	secret: 'goodvibesonlysecret',
+	resave: false,
+	saveUninitialized: false
 }));
+
+app.get('/login', (req, res) => {
+  res.render('login', { user: null });
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', { user: null });
+});
+
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).send('All fields are required');
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).send('Email already registered');
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, password: hashedPassword });
+    await user.save();
+
+    const starterAffirmations = [
+      'You are capable of amazing things.',
+      'Every day is a fresh start.',
+      'You are stronger than you think.',
+      'Your potential is limitless.',
+      'You are worthy of love and respect.',
+      'You can achieve your goals.',
+      'Positivity is a choice you make.',
+      'You are enough just as you are.',
+      'Your mind is powerful and your thoughts shape your reality.',
+      'You bring value to the world.'
+    ];
+    const randomMsg = starterAffirmations[Math.floor(Math.random() * starterAffirmations.length)];
+    const affirmation = new Notification({
+      type: 'affirmation',
+      message: randomMsg,
+      time: new Date(),
+      user: user._id
+    });
+    await affirmation.save();
+
+    req.session.userId = user._id;
+    req.session.randomAffirmationId = affirmation._id;
+    res.redirect('/user');
+  } catch (err) {
+    res.status(500).send('Registration failed: ' + err.message);
+  }
+});
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-app.post('/user/affirmations', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	const { message } = req.body;
-	if (!message || !message.trim()) {
-		return res.redirect('/user');
-	}
-	await Notification.create({
-		type: 'affirmation',
-		message,
-		time: new Date(),
-		user: req.session.userId
-	});
-	res.redirect('/user');
+app.get('/', async (req, res) => {
+  let user = null;
+  if (req.session.userId) {
+    user = await User.findById(req.session.userId);
+  }
+  res.render('index', { user });
 });
 
-app.get('/', (req, res) => {
-	res.render('index');
-});
-
-app.get('/register', (req, res) => {
-	res.render('register', { user: null });
-});
-
-app.post('/register', async (req, res) => {
-	try {
-		const { name, email, password } = req.body;
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const user = new User({ name, email, password: hashedPassword });
-		await user.save();
-		req.session.userId = user._id;
-		res.redirect('/user');
-	} catch (err) {
-		res.status(400).send('Registration failed: ' + err.message);
-	}
-});
-
-app.get('/login', (req, res) => {
-	res.render('login');
+app.get('/all-affirmations', async (req, res) => {
+  try {
+    const affirmations = await Notification.find({ type: 'affirmation' }).populate('user');
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('all-affirmations', { affirmations, user, pageType: 'all' });
+  } catch (err) {
+    res.status(500).send('Error loading affirmations');
+  }
 });
 
 app.post('/login', async (req, res) => {
-		try {
-				const { email, password } = req.body;
-				const user = await User.findOne({ email });
-				if (!user) return res.status(400).send('Invalid email or password');
-				const match = await bcrypt.compare(password, user.password);
-				if (!match) return res.status(400).send('Invalid email or password');
-				req.session.userId = user._id;
-				// Select a new random affirmation for this login
-				const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
-				if (affirmations.length > 0) {
-					req.session.randomAffirmationId = affirmations[Math.floor(Math.random() * affirmations.length)]._id;
-				} else {
-					req.session.randomAffirmationId = null;
-				}
-				res.redirect('/user');
-		} catch (err) {
-				res.status(400).send('Login failed: ' + err.message);
-		}
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send('Invalid email or password');
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).send('Invalid email or password');
+    req.session.userId = user._id;
+    const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
+    if (affirmations.length > 0) {
+      req.session.randomAffirmationId = affirmations[Math.floor(Math.random() * affirmations.length)]._id;
+    } else {
+      req.session.randomAffirmationId = null;
+    }
+    res.redirect('/user');
+  } catch (err) {
+    res.status(400).send('Login failed: ' + err.message);
+  }
 });
 
 app.get('/user', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	const user = await User.findById(req.session.userId);
-	if (!user) return res.redirect('/login');
-	const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
-	const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
-	if (notifications.length > 0) {
-		const idsToRemove = notifications.map(n => n._id);
-		await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
-	}
-	let randomAffirmation = null;
-	if (affirmations.length > 0) {
-		if (req.session.randomAffirmationId) {
-			randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
-		}
-		// Fallback: pick a random one if not found
-		if (!randomAffirmation) {
-			randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-		}
-	}
-	// Fetch all affirmations from all users and populate user names
-	const allAffirmationsRaw = await Notification.find({ type: 'affirmation' }).populate('user');
-	const allAffirmations = allAffirmationsRaw.map(a => ({
-		userName: a.user && a.user.name ? a.user.name : 'Unknown',
-		message: a.message,
-		time: a.time
-	}));
-	res.render('user', { user, affirmations, notifications, randomAffirmation, allAffirmations });
+  if (!req.session.userId) return res.redirect('/login');
+  const user = await User.findById(req.session.userId);
+  if (!user) return res.redirect('/login');
+  const affirmations = await Notification.find({ type: 'affirmation', user: user._id });
+  const notifications = await Notification.find({ type: { $ne: 'affirmation' }, user: user._id });
+  if (notifications.length > 0) {
+    const idsToRemove = notifications.map(n => n._id);
+    await Notification.deleteMany({ _id: { $in: idsToRemove }, user: user._id, type: { $ne: 'affirmation' } });
+  }
+  let randomAffirmation = null;
+  if (affirmations.length > 0) {
+    if (req.session.randomAffirmationId) {
+      randomAffirmation = affirmations.find(a => a._id.toString() === req.session.randomAffirmationId.toString());
+    }
+    if (!randomAffirmation) {
+      randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+    }
+  }
+  const allAffirmationsRaw = await Notification.find({ type: 'affirmation' }).populate('user');
+  const allAffirmations = allAffirmationsRaw.map(a => ({
+    userName: a.user && a.user.name ? a.user.name : 'Unknown',
+    message: a.message,
+    time: a.time
+  }));
+  res.render('user', { user, affirmations, notifications, randomAffirmation, allAffirmations });
 });
 
 app.post('/user/notification-times', async (req, res) => {
 	if (!req.session.userId) return res.redirect('/login');
 	let { notificationTimes } = req.body;
 	if (!notificationTimes) notificationTimes = [];
-	// Split and clean times
 	const timesArr = notificationTimes.split(',').map(t => t.trim()).filter(Boolean);
 	await User.findByIdAndUpdate(req.session.userId, { notificationTimes: timesArr });
 	res.redirect('/user');
 });
-
 
 
 app.post('/user/affirmations/delete/:id', async (req, res) => {
@@ -303,13 +329,14 @@ app.post('/notifications', async (req, res) => {
 });
 
 app.get('/notifications', async (req, res) => {
-	try {
-		const notifications = await Notification.find().populate('user');
-		res.json(notifications);
-	} catch (err) {
-		res.status(500).json({ error: err.message });
-	}
-});
+		try {
+			const notifications = await Notification.find().populate('user');
+			const user = req.session.userId ? await User.findById(req.session.userId) : null;
+			res.render('notifications', { notifications, user });
+		} catch (err) {
+			res.status(500).send('Error loading notifications');
+		}
+	});
 
 app.get('/test', (req, res) => {
 	res.send('Server is running properly!');
@@ -350,3 +377,19 @@ const scheduleUserNotifications = () => {
 }
 
 scheduleUserNotifications();
+
+app.post('/user/affirmations/save', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+  const { message } = req.body;
+  if (!message || !message.trim()) {
+    return res.status(400).send('Affirmation message required');
+  }
+  const affirmation = new Notification({
+    type: 'affirmation',
+    message: message.trim(),
+    time: new Date(),
+    user: req.session.userId
+  });
+  await affirmation.save();
+  res.redirect('/user');
+});

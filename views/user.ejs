@@ -1,3 +1,4 @@
+<%- include('partials/header', { user: user }) %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,17 +8,7 @@
 </head>
 <body style="background: url('/public/photo-1524475922556-171e86798684.avif') no-repeat center center fixed; background-size: cover;">
   <div class="center-profile-page">
-    <nav style="margin-bottom:20px;">
-      <a href="/user">Home</a> |
-      <a href="/user">Profile</a> |
-      <a href="/affirmations">All Users' Affirmations</a> |
-      <a href="/starter-affirmations">Starter Affirmations</a> |
-      <a href="/notifications/view">Notifications</a> |
-      <a href="/settings">Settings</a> |
-      <% if (user) { %>
-        <a href="/logout">Logout</a>
-      <% } %>
-    </nav>
+
 
     <div class="center-profile" style="display: flex; align-items: center; gap: 24px;">
       <% if (user.avatar) { %>
