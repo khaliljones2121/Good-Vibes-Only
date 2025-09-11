@@ -12,7 +12,12 @@ A web app to help users receive daily affirmations and notifications for positiv
 - User settings page
 - EJS templating and MongoDB backend
 
-## Getting Started
+## Planning Materials
+-[Deployed Websites]
+https://good-vibes-only-c6c90154e690.herokuapp.com/ 
+
+-[trello]
+https://trello.com/invite/b/68c053d0371264deb4098685/ATTIaf83e814f15fbb3490900eccc91f5b33F75D9D06/good-vibe-only
 
 ### Prerequisites
 - Node.js

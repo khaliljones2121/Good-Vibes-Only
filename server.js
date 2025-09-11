@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 const cron = require('node-cron');
 const User = require('./models/User');
 const Notification = require('./models/Notification');
-
 mongoose.connect(process.env.MONGO_URI)
 	.then(() => console.log('Connected to MongoDB'))
 	.catch(err => {
@@ -298,7 +297,6 @@ app.post('/settings', async (req, res) => {
     meditationNotificationTimes
   } = req.body;
 
-  // Parse comma-separated values
   notificationTimes = notificationTimes ? notificationTimes.split(',').map(t => t.trim()).filter(Boolean) : [];
   breathingTechniques = breathingTechniques ? breathingTechniques.split(',').map(t => t.trim()).filter(Boolean) : [];
   breathingNotificationTimes = breathingNotificationTimes ? breathingNotificationTimes.split(',').map(t => t.trim()).filter(Boolean) : [];
