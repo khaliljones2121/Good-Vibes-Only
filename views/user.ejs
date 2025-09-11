@@ -23,6 +23,44 @@
     </div>
 
 
+    <h2>Your Breathing Techniques</h2>
+    <% if (user.breathingTechniques && user.breathingTechniques.length > 0) { %>
+      <ul>
+        <% user.breathingTechniques.forEach(function(technique, idx) { %>
+          <li>
+            <form action="/user/breathing/edit/<%= idx %>" method="POST" style="display:inline; margin-right:10px;">
+              <input type="text" name="technique" value="<%= technique %>" required>
+              <button type="submit">Edit</button>
+            </form>
+            <form action="/user/breathing/delete/<%= idx %>" method="POST" style="display:inline; margin-left:10px;">
+              <button type="submit" onclick="return confirm('Delete this technique?')">Delete</button>
+            </form>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <em>No breathing techniques set.</em>
+    <% } %>
+
+    <h2>Your Meditation Reminders</h2>
+    <% if (user.meditationReminders && user.meditationReminders.length > 0) { %>
+      <ul>
+        <% user.meditationReminders.forEach(function(reminder, idx) { %>
+          <li>
+            <form action="/user/meditation/edit/<%= idx %>" method="POST" style="display:inline; margin-right:10px;">
+              <input type="text" name="reminder" value="<%= reminder %>" required>
+              <button type="submit">Edit</button>
+            </form>
+            <form action="/user/meditation/delete/<%= idx %>" method="POST" style="display:inline; margin-left:10px;">
+              <button type="submit" onclick="return confirm('Delete this reminder?')">Delete</button>
+            </form>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <em>No meditation reminders set.</em>
+    <% } %>
+
     <h2>Your Affirmations</h2>
     <% if (affirmations && affirmations.length > 0) { %>
       <ul>

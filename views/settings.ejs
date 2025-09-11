@@ -10,15 +10,33 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <form action="/settings" method="POST">
     <label>Notification Times (HH:MM, comma separated):</label><br>
     <input type="text" name="notificationTimes" value="<%= user.notificationTimes ? user.notificationTimes.join(',') : '' %>" style="width:300px;">
     <small>Example: 09:00,13:00,17:00,21:00</small><br><br>
     <label>Affirmation Frequency (per day):</label><br>
     <input type="number" name="affirmationFrequency" min="1" max="10" value="<%= user.affirmationFrequency || 4 %>"><br><br>
-    <label>Profile Image URL:</label><br>
-    <input type="text" name="avatar" value="<%= user.avatar || '' %>" style="width:300px;">
-    <small>Paste a link to your profile picture (e.g. https://...)</small><br><br>
-    <button type="submit">Save Settings</button>
+  <label>Profile Image URL:</label><br>
+  <input type="text" name="avatar" value="<%= user.avatar || '' %>" style="width:300px;">
+  <small>Paste a link to your profile picture (e.g. https://...)</small><br><br>
+
+  <label>Breathing Techniques (comma separated):</label><br>
+  <input type="text" name="breathingTechniques" value="<%= user.breathingTechniques ? user.breathingTechniques.join(',') : '' %>" style="width:300px;">
+  <small>Example: 4-7-8 Breathing, Box Breathing, Diaphragmatic Breathing</small><br>
+
+  <label>Breathing Notification Times (HH:MM, comma separated):</label><br>
+  <input type="text" name="breathingNotificationTimes" value="<%= user.breathingNotificationTimes ? user.breathingNotificationTimes.join(',') : '' %>" style="width:300px;">
+  <small>Example: 09:00,13:00</small><br><br>
+
+  <label>Meditation Reminders (comma separated):</label><br>
+  <input type="text" name="meditationReminders" value="<%= user.meditationReminders ? user.meditationReminders.join(',') : '' %>" style="width:300px;">
+  <small>Example: Take 2 minutes to focus on your breath, Pause and meditate for 5 minutes</small><br>
+
+  <label>Meditation Notification Times (HH:MM, comma separated):</label><br>
+  <input type="text" name="meditationNotificationTimes" value="<%= user.meditationNotificationTimes ? user.meditationNotificationTimes.join(',') : '' %>" style="width:300px;">
+  <small>Example: 10:00,18:00</small><br><br>
+
+  <button type="submit">Save Settings</button>
   </form>
 </body>
 </html>

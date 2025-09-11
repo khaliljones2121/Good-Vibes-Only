@@ -257,16 +257,17 @@ app.get('/affirmations/today', async (req, res) => {
 
 app.get('/notifications/view', async (req, res) => {
 	try {
-		const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-		let notifications = await Notification.find({ time: { $gte: since }, type: { $ne: 'affirmation' } }).populate('user');
-
-		if (req.session.userId && req.session.randomAffirmationId) {
-			const randomAffirmation = await Notification.findById(req.session.randomAffirmationId).populate('user');
-			if (randomAffirmation) {
-				notifications = [randomAffirmation, ...notifications];
-			}
+		if (!req.session.userId) {
+			return res.redirect('/login');
 		}
-		const user = req.session.userId ? await User.findById(req.session.userId) : null;
+		const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+		let notifications = await Notification.find({
+			user: req.session.userId,
+			time: { $gte: since },
+			type: { $ne: 'affirmation' }
+		}).sort({ time: -1 }).populate('user');
+
+		const user = await User.findById(req.session.userId);
 		res.render('notifications', { notifications, user });
 	} catch (err) {
 		res.status(500).send('Error loading notifications');
@@ -286,17 +287,35 @@ app.get('/settings', async (req, res) => {
 });
 
 app.post('/settings', async (req, res) => {
-	if (!req.session.userId) return res.redirect('/login');
-	let { notificationTimes, affirmationFrequency, avatar } = req.body;
-	if (!notificationTimes) notificationTimes = [];
-	const timesArr = notificationTimes.split(',').map(t => t.trim()).filter(Boolean);
-	affirmationFrequency = parseInt(affirmationFrequency) || 4;
-	await User.findByIdAndUpdate(req.session.userId, {
-		notificationTimes: timesArr,
-		affirmationFrequency,
-		avatar: avatar || ''
-	});
-	res.redirect('/settings');
+  if (!req.session.userId) return res.redirect('/login');
+  let {
+    notificationTimes,
+    affirmationFrequency,
+    avatar,
+    breathingTechniques,
+    breathingNotificationTimes,
+    meditationReminders,
+    meditationNotificationTimes
+  } = req.body;
+
+  // Parse comma-separated values
+  notificationTimes = notificationTimes ? notificationTimes.split(',').map(t => t.trim()).filter(Boolean) : [];
+  breathingTechniques = breathingTechniques ? breathingTechniques.split(',').map(t => t.trim()).filter(Boolean) : [];
+  breathingNotificationTimes = breathingNotificationTimes ? breathingNotificationTimes.split(',').map(t => t.trim()).filter(Boolean) : [];
+  meditationReminders = meditationReminders ? meditationReminders.split(',').map(t => t.trim()).filter(Boolean) : [];
+  meditationNotificationTimes = meditationNotificationTimes ? meditationNotificationTimes.split(',').map(t => t.trim()).filter(Boolean) : [];
+  affirmationFrequency = parseInt(affirmationFrequency) || 4;
+
+  await User.findByIdAndUpdate(req.session.userId, {
+    notificationTimes,
+    affirmationFrequency,
+    avatar: avatar || '',
+    breathingTechniques,
+    breathingNotificationTimes,
+    meditationReminders,
+    meditationNotificationTimes
+  });
+  res.redirect('/settings');
 });
 
 app.post('/users', async (req, res) => {
@@ -329,14 +348,19 @@ app.post('/notifications', async (req, res) => {
 });
 
 app.get('/notifications', async (req, res) => {
-		try {
-			const notifications = await Notification.find().populate('user');
-			const user = req.session.userId ? await User.findById(req.session.userId) : null;
-			res.render('notifications', { notifications, user });
-		} catch (err) {
-			res.status(500).send('Error loading notifications');
+	try {
+		if (!req.session.userId) {
+			return res.redirect('/login');
 		}
-	});
+		const notifications = await Notification.find({
+			user: req.session.userId
+		}).sort({ time: -1 }).populate('user');
+		const user = await User.findById(req.session.userId);
+		res.render('notifications', { notifications, user });
+	} catch (err) {
+		res.status(500).send('Error loading notifications');
+	}
+});
 
 app.get('/test', (req, res) => {
 	res.send('Server is running properly!');
@@ -391,5 +415,63 @@ app.post('/user/affirmations/save', async (req, res) => {
     user: req.session.userId
   });
   await affirmation.save();
+  res.redirect('/user');
+});
+
+app.post('/notifications/delete-all', async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.redirect('/login');
+    }
+    await Notification.deleteMany({ user: req.session.userId });
+    res.redirect('/notifications');
+  } catch (err) {
+    res.status(500).send('Error deleting notifications');
+  }
+});
+
+app.post('/user/breathing/edit/:idx', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+  const idx = parseInt(req.params.idx);
+  const { technique } = req.body;
+  const user = await User.findById(req.session.userId);
+  if (user && Array.isArray(user.breathingTechniques) && user.breathingTechniques[idx] !== undefined) {
+    user.breathingTechniques[idx] = technique;
+    await user.save();
+  }
+  res.redirect('/user');
+});
+
+app.post('/user/breathing/delete/:idx', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+  const idx = parseInt(req.params.idx);
+  const user = await User.findById(req.session.userId);
+  if (user && Array.isArray(user.breathingTechniques) && user.breathingTechniques[idx] !== undefined) {
+    user.breathingTechniques.splice(idx, 1);
+    await user.save();
+  }
+  res.redirect('/user');
+});
+
+app.post('/user/meditation/edit/:idx', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+  const idx = parseInt(req.params.idx);
+  const { reminder } = req.body;
+  const user = await User.findById(req.session.userId);
+  if (user && Array.isArray(user.meditationReminders) && user.meditationReminders[idx] !== undefined) {
+    user.meditationReminders[idx] = reminder;
+    await user.save();
+  }
+  res.redirect('/user');
+});
+
+app.post('/user/meditation/delete/:idx', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+  const idx = parseInt(req.params.idx);
+  const user = await User.findById(req.session.userId);
+  if (user && Array.isArray(user.meditationReminders) && user.meditationReminders[idx] !== undefined) {
+    user.meditationReminders.splice(idx, 1);
+    await user.save();
+  }
   res.redirect('/user');
 });

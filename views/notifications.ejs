@@ -9,7 +9,10 @@
 </head>
 <body style="background: url('/public/photo-1604699229817-27301bdfed68.avif') no-repeat center center fixed; background-size: cover;">
   <div class="center-notifications">
-    <h1>All Notifications</h1>
+    <h1>Your Notifications</h1>
+    <form action="/notifications/delete-all" method="POST" style="margin-bottom:20px; display:flex; justify-content:center;">
+      <button type="submit" style="margin:0 auto;">Remove All Seen Notifications</button>
+    </form>
     <ul>
       <% notifications.forEach(function(notification) { %>
         <li>
