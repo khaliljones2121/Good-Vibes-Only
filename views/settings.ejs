@@ -6,9 +6,10 @@
   <link rel="stylesheet" href="/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body style="background: url('/photo-1614940403325-11a45b241b74.avif') no-repeat center center fixed; background-size: cover;">
-  <h1>User Settings</h1>
-  <form action="/settings" method="POST">
+  <title>Settings</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <label>Notification Times (HH:MM, comma separated):</label><br>
     <input type="text" name="notificationTimes" value="<%= user.notificationTimes ? user.notificationTimes.join(',') : '' %>" style="width:300px;">
     <small>Example: 09:00,13:00,17:00,21:00</small><br><br>
@@ -20,4 +21,6 @@
     <button type="submit">Save Settings</button>
   </form>
 </body>
+</html>
+<%- include('partials/footer') %>
 </html>

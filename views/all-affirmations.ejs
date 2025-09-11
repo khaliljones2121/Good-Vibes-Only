@@ -1,46 +1,49 @@
 <%- include('partials/header', { user: user }) %>
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
   <title>All Affirmations</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="center-affirmations" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; width: 100vw;">
-    <% if (typeof pageType !== 'undefined' && pageType === 'starter') { %>
-      <h1 style="text-align:center; margin: 30px 0; font-size:2.5rem; font-weight:bold;">Starter Affirmations</h1>
-      <ul style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100vw; max-width:900px; margin:0 auto; padding:0;">
-        <% for (let i = 0; i < Math.min(affirmations.length, 5); i++) { %>
-          <li style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; margin:0 auto 18px auto; word-break:break-word; white-space:pre-line; list-style:none;">
-            <div style="display:flex; gap:16px; justify-content:center; align-items:center; margin-bottom:8px;">
-              <form action="/user/affirmations/save" method="POST" style="display:inline;">
-                <input type="hidden" name="message" value="<%= affirmations[i].message %>">
+  </head>
+  <body>
+    <div class="center-affirmations" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; width: 100vw;">
+      <% if (typeof pageType !== 'undefined' && pageType === 'starter') { %>
+        <h1 style="text-align:center; margin: 30px 0; font-size:2.5rem; font-weight:bold;">Starter Affirmations</h1>
+        <ul style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100vw; max-width:900px; margin:0 auto; padding:0;">
+          <% for (let i = 0; i < Math.min(affirmations.length, 5); i++) { %>
+            <li style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; margin:0 auto 18px auto; word-break:break-word; white-space:pre-line; list-style:none;">
+              <div style="display:flex; gap:16px; justify-content:center; align-items:center; margin-bottom:8px;">
+                <form action="/user/affirmations/save" method="POST" style="display:inline;">
+                  <input type="hidden" name="message" value="<%= affirmations[i].message %>">
+                  <button type="submit">Save</button>
+                </form>
+              </div>
+              <strong style="text-align:center; width:100%;"> <%= affirmations[i].message %> </strong><br>
+              <span style="text-align:center;">Time: <%= affirmations[i].time %></span><br>
+              <span style="text-align:center;">User: <%= affirmations[i].user ? affirmations[i].user.name : 'Unknown' %></span>
+            </li>
+          <% } %>
+        </ul>
+      <% } else { %>
+        <h1 style="text-align:center; margin: 30px 0; font-size:2.5rem; font-weight:bold;">All Affirmations</h1>
+        <ul style="width:100%; max-width:600px; margin:0 auto;">
+          <% affirmations.forEach(function(affirmation) { %>
+            <li style="text-align:center;">
+              <form action="/user/affirmations/save" method="POST" style="display:inline; margin-right:10px;">
+                <input type="hidden" name="message" value="<%= affirmation.message %>">
                 <button type="submit">Save</button>
               </form>
-            </div>
-            <strong style="text-align:center; width:100%;"> <%= affirmations[i].message %> </strong><br>
-            <span style="text-align:center;">Time: <%= affirmations[i].time %></span><br>
-            <span style="text-align:center;">User: <%= affirmations[i].user ? affirmations[i].user.name : 'Unknown' %></span>
-          </li>
-        <% } %>
-      </ul>
-    <% } else { %>
-      <h1 style="text-align:center; margin: 30px 0; font-size:2.5rem; font-weight:bold;">All Affirmations</h1>
-      <ul style="width:100%; max-width:600px; margin:0 auto;">
-        <% affirmations.forEach(function(affirmation) { %>
-          <li style="text-align:center;">
-            <form action="/user/affirmations/save" method="POST" style="display:inline; margin-right:10px;">
-              <input type="hidden" name="message" value="<%= affirmation.message %>">
-              <button type="submit">Save</button>
-            </form>
-            <strong><%= affirmation.message %></strong><br>
-            Time: <%= affirmation.time %><br>
-            User: <%= affirmation.user ? affirmation.user.name : 'Unknown' %>
-          </li>
-        <% }); %>
-      </ul>
-    <% } %>
-  </div>
-</body>
+              <strong><%= affirmation.message %></strong><br>
+              Time: <%= affirmation.time %><br>
+              User: <%= affirmation.user ? affirmation.user.name : 'Unknown' %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </div>
+  </body>
+</html>
+<%- include('partials/footer') %>
 </html>
