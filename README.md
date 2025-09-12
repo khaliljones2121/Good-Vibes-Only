@@ -1,6 +1,10 @@
 # Good Vibes Only
 
-A web app to help users receive daily affirmations and notifications for positive mental health.
+**Description:**
+Good Vibes Only is a web app designed to help users cultivate positivity and mindfulness through daily affirmations, breathing techniques, and meditation reminders. Users can register, log in, view and save affirmations, set custom notification times, and manage their own breathing and meditation routines.
+
+**Background:**
+This app was built to encourage healthy habits and mental wellness in a fun, interactive way. Inspired by the need for simple tools to boost mood and mindfulness, Good Vibes Only combines motivational messages with practical breathing and meditation exercises. The goal is to make positivity accessible and actionable for everyone, every day.
 
 ## Features
 - User registration and login
